@@ -30,8 +30,31 @@ function requestAccessToken(code,state) {
 }
 
 function requestProfile(token) {
-  return request.get('https://api.linkedin.com/v2/me?projection=(id,localizedFirstName,localizedLastName,profilePicture(displayImage~digitalmediaAsset:playableStreams))')
+  return request.get('https://api.linkedin.com/v2/me?projection=(id,vanityName,localizedFirstName,localizedLastName,profilePicture(displayImage~digitalmediaAsset:playableStreams))')
   .set('Authorization', `Bearer ${token}`)
 }
+
+// function getUser(i){
+//   return request.get('https://nubela.co/proxycurl/api/v2/linkedin?url=https://www.linkedin.com/in/'+i)
+//       .set('Authorization', `Bearer ${'a447e7c8-8861-46bd-bf38-1093d68eb085'}`)
+//
+// }
+//
+//
+// router.get('/user', function(req,
+//                              res, next) {
+//
+//         getUser(res.body.i)
+//             .then(response => {
+//               console.log(response.body)
+//               res.render('callback', { user: response.body});
+//             })
+//
+//       .catch((error) => {
+//         res.status(500).send(`${error}`)
+//         console.error(error)
+//       })
+// });
+
 
 module.exports = router;

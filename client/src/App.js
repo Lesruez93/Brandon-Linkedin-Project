@@ -8,6 +8,10 @@ import Alert from "react-s-alert";
 import FontAwesomeIcon from "@fortawesome/react-fontawesome";
 import ProfileCard from "./components/ProfileCard";
 import _ from 'lodash';
+var axios = require("axios").default;
+
+
+
 
 class App extends Component {
   constructor(props) {
@@ -18,6 +22,7 @@ class App extends Component {
       lastName: null,
       profileURL: null,
       pictureURL: null,
+      data:null
     };
   }
 
@@ -32,6 +37,25 @@ class App extends Component {
     }
   };
 
+
+  queryMoreDetails = (publicIdentifier) => {
+    let  options = {
+      method: 'GET',
+      url: 'https://nubela.co/proxycurl/api/v2/linkedin?url=https%3A%2F%2Fwww.linkedin.com%2Fin%2F'+publicIdentifier,
+      headers: {
+        'Authorization': 'Bearer ' +'a447e7c8-8861-46bd-bf38-1093d68eb085',
+      }
+    };
+    axios.request(options).then( (response)=> {
+      console.log(response.data);
+
+      // this.setState({data: response.data});
+    }).catch(function (error) {
+      console.error(error);
+    });
+
+  }
+
   updateProfile = (profile) => {
     console.log(profile)
       this.setState({
@@ -41,10 +65,11 @@ class App extends Component {
         profileURL: `https://www.linkedin.com/in/${_.get(profile,'vanityName','')}`,
         pictureURL: _.get(_.last(_.get(profile,'profilePicture.displayImage~.elements','')),'identifiers[0].identifier','')
       })
+    this.requestsDetails(profile)
   }
 
   requestProfile = () => {
-    var oauthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&scope=r_liteprofile&r_emailaddress
+    var oauthUrl = `https://www.linkedin.com/oauth/v2/authorization?response_type=code&client_id=${process.env.REACT_APP_CLIENT_ID}&scope=r_liteprofile&r_basicprofile&r_emailaddress
 &state=123456&redirect_uri=${process.env.REACT_APP_REDIRECT_URI}`
     var width = 450,
       height = 730,
@@ -64,6 +89,26 @@ class App extends Component {
         left
     );
   };
+
+  requestsDetails(profile){
+  let  options = {
+      method: 'GET',
+      url: 'https://linkedin9.p.rapidapi.com/search_people',
+      params: {keywords: this.state.firstName + ' ' + this.state.lastName},
+      headers: {
+        'x-rapidapi-host': 'linkedin9.p.rapidapi.com',
+        'x-rapidapi-key': 'a70a0f84e5msh225bf5f17660a4bp1729ecjsn6e0199ba94c8'
+      }
+    };
+    axios.request(options).then( (response)=> {
+
+      this.queryMoreDetails(response.data[0].publicIdentifier)
+
+     // this.setState({data: response.data});
+    }).catch(function (error) {
+      console.error(error);
+    });
+  }
 
   render() {
     return (
