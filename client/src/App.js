@@ -40,16 +40,18 @@ class App extends Component {
 
   queryMoreDetails = (publicIdentifier) => {
     let  options = {
-      method: 'GET',
-      url: 'https://nubela.co/proxycurl/api/v2/linkedin?url=https%3A%2F%2Fwww.linkedin.com%2Fin%2F'+publicIdentifier,
-      headers: {
-        'Authorization': 'Bearer ' +'a447e7c8-8861-46bd-bf38-1093d68eb085',
+      method: 'POST',
+      url: 'http://localhost:3001/callback/user',
+      body: {
+        'i': publicIdentifier,
       }
     };
     axios.request(options).then( (response)=> {
       console.log(response.data);
+      localStorage.setItem('user',JSON.stringify(response))
 
       // this.setState({data: response.data});
+
     }).catch(function (error) {
       console.error(error);
     });
