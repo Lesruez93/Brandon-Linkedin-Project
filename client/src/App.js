@@ -28,6 +28,7 @@ class App extends Component {
 
   componentDidMount() {
     window.addEventListener('message', this.handlePostMessage);
+console.log(localStorage.getItem('user'))
   }
 
   handlePostMessage = (event) => {
@@ -46,9 +47,9 @@ class App extends Component {
         'i': publicIdentifier,
       }
     };
-    axios.request(options).then( (response)=> {
+    axios.post('http://localhost:3001/callback/user',{'i': publicIdentifier}).then( (response)=> {
       console.log(response.data);
-      localStorage.setItem('user',JSON.stringify(response))
+      localStorage.setItem('user',JSON.stringify(response.data.user))
 
       // this.setState({data: response.data});
 
